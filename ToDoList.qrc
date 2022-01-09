@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pendingTask.png</file>
+        <file>completedTask.png</file>
+        <file>NewTask.png</file>
+    </qresource>
+</RCC>
