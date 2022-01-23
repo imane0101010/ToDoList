@@ -310,7 +310,7 @@ Here is the full implementation:
 }
 }
 ```
-![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoList00.png)
+![](https://github.com/imane0101010/ToDoList/blob/99fc8da668a3d76d1a5c599e748843de187bfe15/modified.png)
 ![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoList01.png)
 
 # MVC Solution:
@@ -478,7 +478,7 @@ For the loading method,I only changed the second part.Here is the modifications 
             
                   }
 ```
-![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoList10.png)
+![](https://github.com/imane0101010/ToDoList/blob/99fc8da668a3d76d1a5c599e748843de187bfe15/modifiedmvc.png)
 ![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoList11.png)
 
 ### The dialog:
