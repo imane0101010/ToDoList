@@ -310,6 +310,9 @@ Here is the full implementation:
 }
 }
 ```
+![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoList00.png)
+![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoList01.png)
+
 # MVC Solution:
 For the MVC solution,I will be using QListView and QSqlDatabase.I will skip the first part which is the creation of toolbars,actions and menues.
 Instead of creating QListWidgets,I used three QListViews and three models.
@@ -361,7 +364,7 @@ Instead of creating QListWidgets,I used three QListViews and three models.
        //add the horizontal layout in the container
        container->setLayout(layout1);
        setCentralWidget(container);
-       ```
+ ```
 When it comes to the slots,I will keep the same reasoning that I used for the itembased solution with some slight modifications.
 
 * [x] **The hide_finished slot**
@@ -389,6 +392,7 @@ When it comes to the slots,I will keep the same reasoning that I used for the it
    ```
   * [x] **The new_slot slot**   
   ```cpp
+  
   task2 task;
     QStringList list;
     QStringList list1;
@@ -437,12 +441,11 @@ When it comes to the slots,I will keep the same reasoning that I used for the it
                model->setStringList(list);
 
             }
-     }
-     ```
-    Now,we should link our ToDoList to a database.I will just adjust the previous code.
-    Since the creation of the database,storage of the tasks and the iteration over the records won´t change,I used the same code (for the itembased solution) and     I will skip this part.
-    For the loading method,I only changed the second part.Here is the modifications that I made:
-    ```cpp
+```
+ Now, we should link our ToDoList to a database.I will just adjust the previous code.
+Since the creation of the database,storage of the tasks and the iteration over the records won´t change,I used the same code (for the itembased solution) and     I will skip this part.
+For the loading method,I only changed the second part.Here is the modifications that I made:
+```cpp
       QStringList F1 = F.split("Finished Task: ");
       QStringList P1 = P.split("Pending Task: ");
       QStringList T1 = T.split("Today´s Task: ");
@@ -475,6 +478,76 @@ When it comes to the slots,I will keep the same reasoning that I used for the it
             
                   }
 ```
-    
-    
+![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoList10.png)
+![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoList11.png)
+
+### The dialog:
+Creating the widgets:
+```cpp
+private:
+ 
+    QDateEdit * DueDate;
+    QComboBox * Tag;
+    QLabel * Description;
+    QLineEdit * LineEdit;
+    QCheckBox *finished;
+    QPushButton *ok;
+    QPushButton *cancel;
+    void createWidgets();
+    void placeWidgets();
+    void makeConnections();
+ public:
+    bool get_finished();
+    int get_Tag();
+    QString get_Description();
+    QDate get_Due_Date();
+```
+Placing the widgets:
+```cpp
+auto layout = new QVBoxLayout;
+auto layout1 = new QFormLayout;
+auto layout2 = new QHBoxLayout;
+layout1->addRow("Description",LineEdit);
+Tag->addItem("Work");
+Tag->addItem("Life");
+Tag->addItem("Other");
+layout1->addRow("Tag",Tag);
+layout1->addRow("Finished",finished);
+layout1->addRow("Due Date",DueDate);
+layout->addLayout(layout1);
+layout2->addSpacing(100);
+ok->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+cancel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+layout2->addWidget(ok);
+layout2->addWidget(cancel);
+layout->addLayout(layout2);
+setLayout(layout);
+```
+Making connections:
+```cpp
+ connect(ok, &QPushButton::clicked, this, &QDialog::accept);
+connect(cancel, &QPushButton::clicked, this, &QDialog::reject);
+```
+Finally, the getters :
+```cpp
+bool Task::get_finished()
+{
+    return finished->isChecked();
+}
+int Task::get_Tag()
+{
+    return Tag->currentIndex();
+}
+
+QString Task::get_Description()
+{
+    return LineEdit->text();
+}
+
+QDate Task::get_Due_Date()
+{
+    return DueDate->date();
+}
+```
+![](https://github.com/imane0101010/ToDoList/blob/6d64ad2c565132bc61b72aaa391585c5e85b3d03/ToDoListDialog.png)
     
