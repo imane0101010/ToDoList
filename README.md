@@ -7,10 +7,12 @@ We will proceed as follows:
 First, we will make an itembased solution using QListWidget.
 
 ### Creating menues and toolbars :
-This oart of this project is already well explained in the previous lab spreadsheet.
+This part of this project is already well explained in the previous lab spreadsheet.
 
-1-Let´s create Actions,menues,toolbars and some methods:
-in the header file:
+* [x] **Let´s create Actions,menues,toolbars and some methods:**
+
+In the header file:
+
 ```cpp
 private:
   QAction *new_task;
@@ -28,9 +30,11 @@ private:
    void createToolBars();
    void makeConnections();
 ```
-in cpp file:
-Implementation of createActions():
-``cpp
+In cpp file:
+
+* [x] **Implementation of createActions():**
+
+```cpp
 
     quit = new QAction("&Quit", this);
      QPixmap pending_task_icon(":/pendingTask.png");
@@ -42,14 +46,16 @@ Implementation of createActions():
     QPixmap new_task_icon(":/NewTask.png");
     new_task =new QAction(new_task_icon,"&New",this);
 ```
-Implementation of createToolBars():
+* [x] **Implementation of createToolBars():**
+
 ```cpp
     toolbar = addToolBar("Toolbar");
     toolbar->addAction(new_task);
     toolbar->addAction(pending_task);
     toolbar->addAction(done_task);
  ```
- Implementation of createMenues():
+* [x] **Implementation of createMenues():**
+
  ```cpp
   file = new QMenu("&File", this);
       menuBar()->addMenu(file);
@@ -64,21 +70,23 @@ Implementation of createToolBars():
       menuBar()->addMenu(help);
       help->addAction("&about");
 ```
-Now let´s connect the Actions:
+* [x] **Now let´s connect the Actions:**
 ```cpp
 connect(new_task,&QAction::triggered,this,&ToDoList::new_slot);
 connect(pending_task,&QAction::triggered,this,&ToDoList::hide_pending);
 connect(done_task,&QAction::triggered,this,&ToDoList::hide_finished);
 ```
 ### Main Widget:
+
 Our main widget should be splitted into three areas:
-Basically we will create three listWidgets.
+We will create three listWidgets.
 ```cpp
  QListWidget *listWidget1 ;
   QListWidget *listWidget2;
   QListWidget *listWidget3;
   ```
-Now.we will try to arrange them in a specific way:
+Now, we will try to arrange them in a specific way:
+
 listWidget1 and listWidget2 will be laid horizontally and the last one will be laid vertically.
 I will be using QSplitter,layouts and a QWidget as a container and a central widget .Here is the full code:
 
@@ -134,8 +142,6 @@ Then comes the hide_finished slot:
 ```
 Finally the new_slot:
 ```cpp
-void ToDoList::new_slot()
-{
    Task task1;
    auto rep = task1.exec();
    //Check if the the dialog is accepted and the task is already finished:
@@ -179,7 +185,7 @@ void ToDoList::new_slot()
                listWidget2->addItem(text);
 
            }
-    }
+    
     ```
     ### Linking my ToDoList with a DB:
     First we will create a database in the header file:
@@ -307,35 +313,168 @@ Here is the full implementation:
 # MVC Solution:
 For the MVC solution,I will be using QListView and QSqlDatabase.I will skip the first part which is the creation of toolbars,actions and menues.
 Instead of creating QListWidgets,I used three QListViews and three models.
-Well,in this part of the lab I decided to change a bit the alignment of the views.
-will be laid horizontally and the last one will be laid vertically.
 
 ```cpp
-
+//creating a QWidget that will be used as container of the layouts
    container = new QWidget;
+   //creating a splitter
    splitter2 = new QSplitter;
-   splitter1 = new QSplitter(Qt::Horizontal);
+   //creating a second splitter
+   splitter1 = new QSplitter;
+   //creating the first QListView listV 
     listV = new QListView;
+    //creating the model
     model = new QStringListModel;
     listV->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    //set the model model in the listV
    listV->setModel(model);
+   //adding a QHBoxLayout
    auto layout1 = new QHBoxLayout;
+      //adding a QVBoxLayout
    auto layout = new QVBoxLayout;
+   //add the listV in the vertical layout layout
    layout->addWidget(listV);
+   //creating the second QListView listV1
      listV1 = new QListView;
     listV1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    //creating the model model1
      model1 = new QStringListModel;
+     //setting the model model1 in listV1
      listV1->setModel(model1);
+     //laying out the listV and the listV1 vertically
     splitter1->addWidget(listV);
     splitter1->addWidget(listV1);
     layout->addWidget(splitter1);
+    //creating the third QListView listV2
        listV2 = new QListView;
+    //creating the model model2
        model2 = new QStringListModel;
        listV2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+     //setting the model model2 in listV2
        listV2->setModel(model2);
+     //laying out the listV2 vertically
        splitter2->addWidget(listV2);
+       //adding splitter2 in the horizontal layout
        layout1->addWidget(splitter2);
+       //adding the vertical layout in the horizontal layout
        layout1->addLayout(layout);
+       //add the horizontal layout in the container
        container->setLayout(layout1);
        setCentralWidget(container);
        ```
+When it comes to the slots,I will keep the same reasoning that I used for the itembased solution with some slight modifications.
+
+* [x] **The hide_finished slot**
+```cpp
+
+    for(int i =0;i<model1->rowCount();i++){
+        if(listV1->isRowHidden(i)){
+           listV1->setRowHidden(i,0);
+        }else{
+            listV1->setRowHidden(i,1);
+        }
+    }
+   }
+   ```
+ * [x] **The hide_pending slot**   
+```cpp
+ for(int i =0;i<model->rowCount();i++){
+        if(listV2->isRowHidden(i)){
+           listV2->setRowHidden(i,0);
+        }else{
+            listV2->setRowHidden(i,1);
+        }
+    }
+   }
+   ```
+  * [x] **The new_slot slot**   
+  ```cpp
+  task2 task;
+    QStringList list;
+    QStringList list1;
+    QStringList list2;
+    auto rep = task.exec();
+    //check if the dialog is accepted and the task is finished
+      if(rep == QDialog::Accepted && task.get_finished()){
+      //creating the text that will be dispalyed in the model
+         QString text ="Finished Task: ";
+         state.clear();
+         state = "Finished";
+         text.append(task.get_Due_Date().toString());
+         text.append(" ");
+         text.append(task.get_Description());
+         text.append(" Tag: ");
+         text.append(QString::number(task.get_Tag()));
+         //adding the text in the QStringList list1
+         list1.append(text);
+         //setting the list1 in the model
+         model1->setStringList(list1);
+
+
+     }else if(rep == QDialog::Accepted && !task.get_finished()){
+            if(task.get_Due_Date().toString()==QDateTime::currentDateTime().date().toString()){
+                QString text ="Today´s Task: ";
+                state.clear();
+                state = "Today";
+                text.append(task.get_Due_Date().toString());
+                text.append(" ");
+               text.append(task.get_Description());
+                text.append(" Tag: ");
+                text.append(QString::number(task.get_Tag()));
+                list2.append(text);
+                model2->setStringList(list2);
+
+            }else if(task.get_Due_Date() != QDateTime::currentDateTime().date() ){
+                QString text ="Pending Task: ";
+                state.clear();
+                state ="Pending";
+                text.append(task.get_Due_Date().toString());
+                text.append(" ");
+                text.append(task.get_Description());
+                text.append(" Tag: ");
+                text.append(QString::number(task.get_Tag()));
+               list.append(text);
+               model->setStringList(list);
+
+            }
+     }
+     ```
+    Now,we should link our ToDoList to a database.I will just adjust the previous code.
+    Since the creation of the database,storage of the tasks and the iteration over the records won´t change,I used the same code (for the itembased solution) and     I will skip this part.
+    For the loading method,I only changed the second part.Here is the modifications that I made:
+    ```cpp
+      QStringList F1 = F.split("Finished Task: ");
+      QStringList P1 = P.split("Pending Task: ");
+      QStringList T1 = T.split("Today´s Task: ");
+      QStringList list;
+          for(int i =0 ; i< qMax(F1.size(),qMax(P1.size(),T1.size()));i++){
+           
+              if(i<T1.size() && T1.size()>1){
+               QString s1 ="Finished Task: ";
+               s1.append(T1.at(i));
+               list.clear();
+               list.append(s1);
+               model1->setStringList(list);
+           
+              }
+
+              if(i<P1.size() && P1.size()>1){
+                  QString s2 ="Pending Task: ";
+                  s2.append(P1.at(i));
+                  list.clear();
+                  list.append(s2);
+                  model->setStringList(list);
+
+              }
+              if(i<F1.size() && F1.size()>1){
+                  QString s3 ="Today´s Task: ";
+                  s3.append(F1.at(i));
+                  list.clear();
+                  list.append(s3);
+                  model2->setStringList(list);
+            
+                  }
+```
+    
+    
+    
